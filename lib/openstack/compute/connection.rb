@@ -54,15 +54,17 @@ module Compute
     # includes public and private IP addresses, status, hostID, and more.  All hash keys are symbols except for the metadata
     # hash, which are verbatim strings.
     #
-    # You can also provide :limit and :offset parameters to handle pagination.
+    # You can also provide :limit and :offset and :"changes-since" and :image and :flavor and :name and :status and :host
+    # and :limit and :marker parameters to handle pagination.
+    # http://developer.openstack.org/api-ref-compute-v2.1.html
     #   >> cs.list_servers_detail
     #   => [{:name=>"MyServer", :addresses=>{:public=>["67.23.42.37"], :private=>["10.176.241.237"]}, :metadata=>{"MyData" => "Valid"}, :imageRef=>10, :progress=>100, :hostId=>"36143b12e9e48998c2aef79b50e144d2", :flavorRef=>1, :id=>110917, :status=>"ACTIVE"}]
     #
-    #   >> cs.list_servers_detail(:limit => 2, :offset => 3)
+    #   >> cs.list_servers_detail(:limit => 2, :offset => 3, :name => "MyServer", :flavor => 1, :status => "ACTIVE")
     #   => [{:status=>"ACTIVE", :imageRef=>10, :progress=>100, :metadata=>{}, :addresses=>{:public=>["x.x.x.x"], :private=>["x.x.x.x"]}, :name=>"demo-standingcloud-lts", :id=>168867, :flavorRef=>1, :hostId=>"xxxxxx"},
     #       {:status=>"ACTIVE", :imageRef=>8, :progress=>100, :metadata=>{}, :addresses=>{:public=>["x.x.x.x"], :private=>["x.x.x.x"]}, :name=>"demo-aicache1", :id=>187853, :flavorRef=>3, :hostId=>"xxxxxx"}]
     def list_servers_detail(options = {})
-      path = OpenStack.paginate(options).empty? ? "#{@connection.service_path}/servers/detail" : "#{@connection.service_path}/servers/detail?#{OpenStack.paginate(options)}"
+      path = options.empty? ? "#{@connection.service_path}/servers/detail" : "#{@connection.service_path}/servers/detail?#{options.to_query}"
       response = @connection.csreq("GET",@connection.service_host,path,@connection.service_port,@connection.service_scheme)
       OpenStack::Exception.raise_exception(response) unless response.code.match(/^20.$/)
       json_server_list = JSON.parse(response.body)["servers"]

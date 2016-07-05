@@ -22,6 +22,7 @@ class Connection
     attr_reader   :service_type
     attr_reader   :proxy_host
     attr_reader   :proxy_port
+    attr_reader   :open_timeout
     attr_reader   :region
     attr_reader   :regions_list #e.g. os.connection.regions_list == {"region-a.geo-1" => [ {:service=>"object-store", :versionId=>"1.0"}, {:service=>"identity", :versionId=>"2.0"}], "region-b.geo-1"=>[{:service=>"identity", :versionId=>"2.0"}] }
 
@@ -105,6 +106,7 @@ class Connection
       @retry_auth = options[:retry_auth]
       @proxy_host = options[:proxy_host]
       @proxy_port = options[:proxy_port]
+      @open_timeout = options[:open_timeout]
       @authok = false
       @http = {}
       @quantum_version = 'v2.0' if @service_type == 'network'
@@ -229,6 +231,7 @@ class Connection
       if (@http[server].nil?)
         begin
           @http[server] = Net::HTTP::Proxy(@proxy_host, @proxy_port).new(server,port)
+          @http[server].open_timeout = @open_timeout if @open_timeout
           if scheme == "https"
             @http[server].use_ssl = true
             @http[server].verify_mode = OpenSSL::SSL::VERIFY_NONE
@@ -277,6 +280,7 @@ class AuthV20
 
     begin
       server = Net::HTTP::Proxy(connection.proxy_host, connection.proxy_port).new(connection.auth_host, connection.auth_port)
+      server.open_timeout = connection.open_timeout
       if connection.auth_scheme == "https"
         server.use_ssl = true
         server.verify_mode = OpenSSL::SSL::VERIFY_NONE
@@ -378,6 +382,7 @@ class AuthV10
     hdrhash = { "X-Auth-User" => connection.authuser, "X-Auth-Key" => connection.authkey }
     begin
       server = Net::HTTP::Proxy(connection.proxy_host, connection.proxy_port).new(connection.auth_host, connection.auth_port)
+      server.open_timeout = connection.open_timeout
       if connection.auth_scheme == "https"
         server.use_ssl = true
         server.verify_mode = OpenSSL::SSL::VERIFY_NONE

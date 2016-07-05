@@ -280,7 +280,7 @@ class AuthV20
 
     begin
       server = Net::HTTP::Proxy(connection.proxy_host, connection.proxy_port).new(connection.auth_host, connection.auth_port)
-      server.open_timeout = connection.open_timeout
+      server.open_timeout = connection.open_timeout if connection.open_timeout
       if connection.auth_scheme == "https"
         server.use_ssl = true
         server.verify_mode = OpenSSL::SSL::VERIFY_NONE
@@ -382,7 +382,7 @@ class AuthV10
     hdrhash = { "X-Auth-User" => connection.authuser, "X-Auth-Key" => connection.authkey }
     begin
       server = Net::HTTP::Proxy(connection.proxy_host, connection.proxy_port).new(connection.auth_host, connection.auth_port)
-      server.open_timeout = connection.open_timeout
+      server.open_timeout = connection.open_timeout if connection.open_timeout
       if connection.auth_scheme == "https"
         server.use_ssl = true
         server.verify_mode = OpenSSL::SSL::VERIFY_NONE

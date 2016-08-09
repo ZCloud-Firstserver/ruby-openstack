@@ -157,6 +157,7 @@ class Connection
 
     # This method actually makes the HTTP REST calls out to the server
     def csreq(method,server,path,port,scheme,headers = {},data = nil,attempts = 0, &block) # :nodoc:
+      Logger.info "OpenStackRequest: method: #{method}, server: #{server}, path: #{path}, port: #{port}, scheme: #{scheme}, headers: #{headers}, data: #{data}, attempts: #{attempts}"
 
       tries = @retries
       time = 3

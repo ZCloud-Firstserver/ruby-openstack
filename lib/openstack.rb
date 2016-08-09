@@ -50,6 +50,7 @@ module OpenStack
   require 'openstack/network/subnet'
   require 'openstack/network/router'
   require 'openstack/network/port'
+  require 'openstack/logger'
   require 'openstack/version'
   # Constants that set limits on server creation
   MAX_PERSONALITY_ITEMS = 5

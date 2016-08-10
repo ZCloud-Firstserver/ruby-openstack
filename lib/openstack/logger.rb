@@ -6,9 +6,10 @@ class Logger
 
     def_delegators :logger, :debug, :info, :warn, :error, :fatal
 
-    def configure(out_path, level: nil)
+    def configure(out_path, level: nil, formatter: nil)
       @out_path = out_path
       @level = level
+      @fomatter = formatter
       @logger = nil
     end
 
@@ -16,6 +17,7 @@ class Logger
       unless @logger
         @logger = ::Logger.new(@out_path)
         @logger.level = ::Logger::SEV_LABEL.index(@level.to_s.upcase) || 0
+        @logger.formatter = @formatter
       end
       @logger
     end

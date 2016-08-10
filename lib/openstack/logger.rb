@@ -9,7 +9,7 @@ class Logger
     def configure(out_path, level: nil, formatter: nil)
       @out_path = out_path
       @level = level
-      @fomatter = formatter
+      @formatter = formatter
       @logger = nil
     end
 
@@ -25,7 +25,3 @@ class Logger
 end
 
 end
-
-OpenStack::Logger.configure(STDOUT)
-OpenStack::Logger.info ""
-

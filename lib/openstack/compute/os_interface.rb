@@ -1,7 +1,7 @@
 module OpenStack
 module Compute
   class OsInterface
-    attr_reader :fixed_ip
+    attr_reader :fixed_ips
     attr_reader :mac_addr
     attr_reader :net_id
     attr_reader :port_id

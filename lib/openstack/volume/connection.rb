@@ -110,7 +110,7 @@ module Volume
       response = @connection.csreq("GET", @connection.service_host, "/v2/#{@connection.authtenant[:value]}/types", @connection.service_port, @connection.service_scheme, {'content-type'=>'application/json'})
       OpenStack::Exception.raise_exception(response) unless response.code.match(/^20.$/)
       volume_type_hash = JSON.parse(response.body)["volume_types"]
-      #volume_type_hash.inject([]){|res, current| res << OpenStack::Volume::VolumeType.new(current); res}
+      volume_type_hash.inject([]){|res, current| res << OpenStack::Volume::VolumeType.new(current); res}
     end
 
     private

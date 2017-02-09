@@ -114,8 +114,14 @@ module Compute
       raise OpenStack::Exception::MissingArgument, "Server name, and flavorRef must be supplied" unless (options[:name] && options[:flavorRef])
       options[:personality] = Personalities.get_personality(options[:personality])
       options[:security_groups] = (options[:security_groups] || []).inject([]){|res, c| res << {"name"=>c} ;res}
-      data = JSON.generate(:server => options)
-      response = @connection.csreq("POST",@connection.service_host,"#{@connection.service_path}/servers",@connection.service_port,@connection.service_scheme,{'content-type' => 'application/json'},data)
+
+      dup_option = option.dup
+      fis_cluster = dup_option.delete(:fis_cluster)
+
+      data = JSON.generate(:server => dup_options)
+      header = {'content-type' => 'application/json'}.merge("X-Fis_Cluster" => fis_cluster)
+
+      response = @connection.csreq("POST",@connection.service_host,"#{@connection.service_path}/servers",@connection.service_port,@connection.service_scheme,header,data)
       OpenStack::Exception.raise_exception(response) unless response.code.match(/^20.$/)
       server_info = JSON.parse(response.body)['server']
       server = OpenStack::Compute::Server.new(self,server_info['id'])

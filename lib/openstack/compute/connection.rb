@@ -119,7 +119,7 @@ module Compute
       fis_cluster = dup_options.delete(:fis_cluster)
 
       data = JSON.generate(:server => dup_options)
-      headers = {'content-type' => 'application/json'}.merge("X-Fis_Cluster" => fis_cluster)
+      headers = {'content-type' => 'application/json'}.merge("X-Fis-Cluster" => fis_cluster)
 
       response = @connection.csreq("POST",@connection.service_host,"#{@connection.service_path}/servers",@connection.service_port,@connection.service_scheme,headers,data)
       OpenStack::Exception.raise_exception(response) unless response.code.match(/^20.$/)

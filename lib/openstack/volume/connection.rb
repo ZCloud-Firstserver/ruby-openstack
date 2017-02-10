@@ -35,13 +35,14 @@ module Volume
 
     #no options documented in API at Nov 2012
     #(e.g. like limit/marker as used in Nova for servers)
-    def list_volumes
-      response = @connection.req("GET", "/#{@volume_path}")
+    #You can also provide :limit and :offset parameters to handle pagenation.
+    def list_volumes(options= {})
+      path = options.empty? ? "/#{@volume_path}" : "/#{@volume_path}?#{options.to_query}"
+      response = @connection.req("GET", path)
       volumes_hash = JSON.parse(response.body)["volumes"]
       volumes_hash.inject([]){|res, current| res << OpenStack::Volume::Volume.new(current); res}
     end
     alias :volumes :list_volumes
-
 
     def get_volume(vol_id)
       response = @connection.req("GET", "/#{@volume_path}/#{vol_id}")

@@ -115,13 +115,13 @@ module Compute
       options[:personality] = Personalities.get_personality(options[:personality])
       options[:security_groups] = (options[:security_groups] || []).inject([]){|res, c| res << {"name"=>c} ;res}
 
-      dup_option = option.dup
-      fis_cluster = dup_option.delete(:fis_cluster)
+      dup_options = options.dup
+      fis_cluster = dup_options.delete(:fis_cluster)
 
       data = JSON.generate(:server => dup_options)
-      header = {'content-type' => 'application/json'}.merge("X-Fis_Cluster" => fis_cluster)
+      headers = {'content-type' => 'application/json'}.merge("X-Fis_Cluster" => fis_cluster)
 
-      response = @connection.csreq("POST",@connection.service_host,"#{@connection.service_path}/servers",@connection.service_port,@connection.service_scheme,header,data)
+      response = @connection.csreq("POST",@connection.service_host,"#{@connection.service_path}/servers",@connection.service_port,@connection.service_scheme,headers,data)
       OpenStack::Exception.raise_exception(response) unless response.code.match(/^20.$/)
       server_info = JSON.parse(response.body)['server']
       server = OpenStack::Compute::Server.new(self,server_info['id'])

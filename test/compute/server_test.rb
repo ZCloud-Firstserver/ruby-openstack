@@ -1,6 +1,5 @@
 require File.expand_path(File.dirname(__FILE__) + '/../test_helper.rb')
 
-
 class ComputeConnectionTest < Test::Unit::TestCase
   include TestConnection
 

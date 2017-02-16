@@ -28,6 +28,7 @@ class Connection
 
     attr_reader   :http
     attr_reader   :is_debug
+    attr_reader   :fis_cluster
 
     # Creates and returns a new Connection object, depending on the service_type
     # passed in the options:
@@ -93,6 +94,7 @@ class Connection
       @regions_list = {} # this is populated during authentication - from the returned service catalogue
       @is_debug = options[:is_debug]
       auth_uri=nil
+      @fis_cluster = option[:fis_cluster]
       begin
         auth_uri=URI.parse(@auth_url)
       rescue Exception => e
@@ -306,7 +308,10 @@ class AuthV20
         raise Exception::InvalidArgument, "Unrecognized auth method #{connection.auth_method}"
     end
 
-    response = server.post(connection.auth_path.chomp("/")+"/tokens", auth_data, {'Content-Type' => 'application/json'})
+    hdrhash = {'Content-Type' => 'application/json'}
+    hdrhash.merge!("X-Fis-Cluster" => connection.fis_cluster) if connection.fis_cluster.present?
+
+    response = server.post(connection.auth_path.chomp("/")+"/tokens", auth_data, hdrhash)
     if (response.code =~ /^20./)
       resp_data=JSON.parse(response.body)
       connection.authtoken = resp_data['access']['token']['id']
@@ -380,6 +385,7 @@ class AuthV10
     time = 3
 
     hdrhash = { "X-Auth-User" => connection.authuser, "X-Auth-Key" => connection.authkey }
+    hdrhash.merge!("X-Fis-Cluster" => connection.fis_cluster) if connection.fis_cluster.present?
     begin
       server = Net::HTTP::Proxy(connection.proxy_host, connection.proxy_port).new(connection.auth_host, connection.auth_port)
       server.open_timeout = connection.open_timeout if connection.open_timeout

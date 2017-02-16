@@ -94,7 +94,7 @@ class Connection
       @regions_list = {} # this is populated during authentication - from the returned service catalogue
       @is_debug = options[:is_debug]
       auth_uri=nil
-      @fis_cluster = option[:fis_cluster]
+      @fis_cluster = options[:fis_cluster]
       begin
         auth_uri=URI.parse(@auth_url)
       rescue Exception => e

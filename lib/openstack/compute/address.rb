@@ -20,18 +20,24 @@ module Compute
 
   class Address
 
+    attr_reader :mac_addr
+    attr_reader :type
     attr_reader :address
     attr_reader :label
     attr_reader :version
 
-    def initialize(label, address, version = 4)
+    def initialize(label, address, version = 4, mac_addr = nil, type = nil)
       @label = label
       if address.class == Hash then
-        @address = address["addr"]
-        @version = address["version"]
+        @address  = address["addr"]
+        @version  = address["version"]
+        @mac_addr = address["OS-EXT-IPS-MAC:mac_addr"]
+        @type     = address["OS-EXT-IPS:type"]
       else
-        @address = address
-        @version = version
+        @address  = address
+        @version  = version
+        @mac_addr = mac_addr
+        @type     = type
       end
     end
 

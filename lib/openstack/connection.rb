@@ -206,8 +206,8 @@ class Connection
       headers  = options[:headers]  || {'content-type' => 'application/json'}
       data     = options[:data]
       attempts = options[:attempts] || 0
-      path = @service_path + @quantum_version.to_s + path
-      res = csreq(method,server,path,port,scheme,headers,data,attempts)
+      new_path = File.join(@service_path, @quantum_version.to_s, path)
+      res = csreq(method,server,new_path,port,scheme,headers,data,attempts)
       res.code.match(/^20.$/) ? (return res) : OpenStack::Exception.raise_exception(res)
     end
 

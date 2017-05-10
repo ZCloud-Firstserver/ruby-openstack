@@ -11,7 +11,6 @@ module Network
     attr_reader :floating_ip_address
     attr_reader :status
     attr_reader :description
-    attr_reader :revision_number
 
     def initialize(ip_info={})
       @id                  = ip_info["id"]
@@ -23,7 +22,6 @@ module Network
       @floating_ip_address = ip_info["floating_ip_address"]
       @status              = ip_info["status"]
       @description         = ip_info["description"]
-      @revision_number     = ip_info["revision_number"]
     end
 
   end

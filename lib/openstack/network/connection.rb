@@ -165,6 +165,13 @@ module Network
       OpenStack::Network::FloatingIp.new(JSON.parse(response.body)["floatingip"])
     end
 
+    def update_floating_ip(floatingip_id, opts={})
+      body_hash = {"floatingip"=>{}}
+      body_hash["floatingip"].merge!(opts)
+      req_body = JSON.generate(body_hash)
+      response = @connection.req("PUT", "/floatingips/#{floatingip_id}", {:data=>req_body})
+      OpenStack::Network::FloatingIp.new(JSON.parse(response.body)["floatingip"])
+    end
   end
 
 end

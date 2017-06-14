@@ -29,6 +29,7 @@ class Connection
     attr_reader   :http
     attr_reader   :is_debug
     attr_reader   :fis_cluster
+    attr_reader   :fis_immigrant
 
     # Creates and returns a new Connection object, depending on the service_type
     # passed in the options:
@@ -95,6 +96,7 @@ class Connection
       @is_debug = options[:is_debug]
       auth_uri=nil
       @fis_cluster = options[:fis_cluster]
+      @fis_immigrant = options[:fis_immigrant]
       begin
         auth_uri=URI.parse(@auth_url)
       rescue Exception => e
@@ -310,6 +312,7 @@ class AuthV20
 
     hdrhash = {'Content-Type' => 'application/json'}
     hdrhash.merge!("X-Fis-Cluster" => connection.fis_cluster) if connection.fis_cluster.present?
+    hdrhash.merge!("X-Fis-Immigrant" => connection.fis_immigrant) if connection.fix_immigrant.present?
 
     response = server.post(connection.auth_path.chomp("/")+"/tokens", auth_data, hdrhash)
     if (response.code =~ /^20./)

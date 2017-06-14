@@ -312,7 +312,7 @@ class AuthV20
 
     hdrhash = {'Content-Type' => 'application/json'}
     hdrhash.merge!("X-Fis-Cluster" => connection.fis_cluster) if connection.fis_cluster.present?
-    hdrhash.merge!("X-Fis-Immigrant" => connection.fis_immigrant) if connection.fix_immigrant.present?
+    hdrhash.merge!("X-Fis-Immigrant" => connection.fis_immigrant) if connection.fis_immigrant.present?
 
     response = server.post(connection.auth_path.chomp("/")+"/tokens", auth_data, hdrhash)
     if (response.code =~ /^20./)
@@ -389,6 +389,7 @@ class AuthV10
 
     hdrhash = { "X-Auth-User" => connection.authuser, "X-Auth-Key" => connection.authkey }
     hdrhash.merge!("X-Fis-Cluster" => connection.fis_cluster) if connection.fis_cluster.present?
+    hdrhash.merge!("X-Fis-Immigrant" => connection.fis_immigrant) if connection.fis_immigrant.present?
     begin
       server = Net::HTTP::Proxy(connection.proxy_host, connection.proxy_port).new(connection.auth_host, connection.auth_port)
       server.open_timeout = connection.open_timeout if connection.open_timeout

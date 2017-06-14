@@ -29,7 +29,7 @@ class Connection
     attr_reader   :http
     attr_reader   :is_debug
     attr_reader   :fis_cluster
-    attr_reader   :fis_immigrant
+    attr_reader   :fis_immigrant_ip
 
     # Creates and returns a new Connection object, depending on the service_type
     # passed in the options:
@@ -96,7 +96,7 @@ class Connection
       @is_debug = options[:is_debug]
       auth_uri=nil
       @fis_cluster = options[:fis_cluster]
-      @fis_immigrant = options[:fis_immigrant]
+      @fis_immigrant_ip = options[:fis_immigrant_ip]
       begin
         auth_uri=URI.parse(@auth_url)
       rescue Exception => e
@@ -312,7 +312,7 @@ class AuthV20
 
     hdrhash = {'Content-Type' => 'application/json'}
     hdrhash.merge!("X-Fis-Cluster" => connection.fis_cluster) if connection.fis_cluster.present?
-    hdrhash.merge!("X-Fis-Immigrant" => connection.fis_immigrant) if connection.fis_immigrant.present?
+    hdrhash.merge!("X-Fis-Immigrant" => connection.fis_immigrant_ip) if connection.fis_immigrant_ip.present?
 
     response = server.post(connection.auth_path.chomp("/")+"/tokens", auth_data, hdrhash)
     if (response.code =~ /^20./)
@@ -389,7 +389,7 @@ class AuthV10
 
     hdrhash = { "X-Auth-User" => connection.authuser, "X-Auth-Key" => connection.authkey }
     hdrhash.merge!("X-Fis-Cluster" => connection.fis_cluster) if connection.fis_cluster.present?
-    hdrhash.merge!("X-Fis-Immigrant" => connection.fis_immigrant) if connection.fis_immigrant.present?
+    hdrhash.merge!("X-Fis-Immigrant-Ip" => connection.fis_immigrant_ip) if connection.fis_immigrant_ip.present?
     begin
       server = Net::HTTP::Proxy(connection.proxy_host, connection.proxy_port).new(connection.auth_host, connection.auth_port)
       server.open_timeout = connection.open_timeout if connection.open_timeout

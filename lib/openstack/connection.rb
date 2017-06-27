@@ -312,7 +312,7 @@ class AuthV20
 
     hdrhash = {'Content-Type' => 'application/json'}
     hdrhash.merge!("X-Fis-Cluster" => connection.fis_cluster) if connection.fis_cluster.present?
-    hdrhash.merge!("X-Fis-Immigrant" => connection.fis_immigrant_ip) if connection.fis_immigrant_ip.present?
+    hdrhash.merge!("X-Fis-Immigrant-Ip" => connection.fis_immigrant_ip) if connection.fis_immigrant_ip.present?
 
     response = server.post(connection.auth_path.chomp("/")+"/tokens", auth_data, hdrhash)
     if (response.code =~ /^20./)

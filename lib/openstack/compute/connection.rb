@@ -3,6 +3,8 @@ module Compute
 
   class Connection
 
+    require 'openstack/compute/os_interface'
+
     attr_accessor   :connection
     attr_accessor   :extensions
 
@@ -493,6 +495,14 @@ module Compute
       check_extension 'os-floating-ips-bulk'
       response = @connection.req('POST', '/os-floating-ips-bulk/delete', {:data => data})
       res = JSON.generate(response)
+    end
+
+    def get_os_interface(server_id)
+      path = "/servers/#{URI.encode(server_id.to_s)}/os-interface"
+      response = @connection.req("GET", path)
+      JSON.parse(response.body)["interfaceAttachments"].map do |hash|
+        OpenStack::Compute::OsInterface.new(hash)
+      end
     end
 
     private
